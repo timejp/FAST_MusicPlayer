@@ -62,6 +62,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        recyclerViewAdapter.set(new MusicManager(this).getMusicDataList());
+        recyclerViewAdapter.set(MusicManager.getMusicDataList(this));
     }
 }

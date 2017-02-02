@@ -1,14 +1,19 @@
 package com.timejh.musicplayer;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -17,19 +22,16 @@ import java.util.ArrayList;
 
 public class MusicManager {
 
-    private Context context;
-    private ArrayList<MusicData> datas = new ArrayList<>();
+    private static final String TAG = "MusicManager";
+    private static ArrayList<MusicData> datas = new ArrayList<>();
 
-    public MusicManager(Context context) {
-        this.context = context;
-        getUserContactsList();
-    }
-
-    public ArrayList<MusicData> getMusicDataList() {
+    public static ArrayList<MusicData> getMusicDataList(Context context) {
+        if(datas.size() == 0)
+            loadMusicDataList(context);
         return datas;
     }
 
-    private void getUserContactsList() {
+    private static void loadMusicDataList(Context context) {
         ContentResolver resolver = context.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String projections[] ={
@@ -57,5 +59,30 @@ public class MusicManager {
                 datas.add(musicData);
             }
         }
+    }
+
+    public static Uri getAlbumImageUri(String album_id) {
+        return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), Long.parseLong(album_id));
+    }
+
+    public static Bitmap getAlbumImageBitmap(Context context, String album_id) {
+        Uri uri = getAlbumImageUri(album_id);
+        ContentResolver resolver = context.getContentResolver();
+        InputStream inputStream = null;
+        try {
+            inputStream = resolver.openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            return bitmap;
+        } catch (FileNotFoundException e) {
+            Logger.logE(TAG, e.getMessage());
+        }
+        return null;
+    }
+
+    public static void setImageViewByGlide(Context context, ImageView imageView, String album_id) {
+        Glide.with(context)
+                .load(MusicManager.getAlbumImageUri(album_id))
+                .placeholder(R.mipmap.ic_launcher)
+                .into(imageView);
     }
 }
