@@ -66,7 +66,7 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewAdapter.Cust
 //                .load(MusicManager.getAlbumImageUri(musicData.getAlbum_id()))
 //                .placeholder(R.mipmap.ic_launcher)
 //                .into(holder.iv_image);
-        MusicManager.setImageViewByGlide(context, holder.iv_image, musicData.getAlbum_id());
+        MusicManager.setImageViewByGlide(context, holder.iv_image, musicData);
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
         holder.cardView.setAnimation(animation);
@@ -96,7 +96,7 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewAdapter.Cust
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, PlayerActivity.class);
-                    intent.putExtra("position", position);
+                    intent.putExtra("musicPosition", position);
                     context.startActivity(intent);
                 }
             });

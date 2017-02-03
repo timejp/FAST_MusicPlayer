@@ -1,5 +1,6 @@
 package com.timejh.musicplayer;
 
+import android.net.Uri;
 import android.util.Log;
 
 /**
@@ -12,16 +13,19 @@ public class MusicData {
     private String album_id;
     private String title;
     private String artist;
+    private Uri imageuri;
+    private Uri uri;
 
     public MusicData() {
 
     }
 
-    public MusicData(String id, String title, String artist, String album_id) {
+    public MusicData(String id, String title, String artist, String album_id, Uri uri) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.album_id = album_id;
+        this.uri = uri;
     }
 
     public String getId() {
@@ -54,6 +58,22 @@ public class MusicData {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public Uri getImageuri() {
+        return imageuri;
+    }
+
+    public void setImageuri(Uri imageuri) {
+        this.imageuri = imageuri;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 
     public void print() {

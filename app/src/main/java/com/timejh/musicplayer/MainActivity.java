@@ -64,4 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private void loadData() {
         recyclerViewAdapter.set(MusicManager.getMusicDataList(this));
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PlayerActivity.stop();
+    }
 }

@@ -36,6 +36,10 @@ public class PlayerAdapter extends PagerAdapter {
         this.notifyDataSetChanged();
     }
 
+    public MusicData getMusicData(int position) {
+        return musicDatas.get(position);
+    }
+
     @Override
     public int getCount() {
         return musicDatas.size();
@@ -55,7 +59,7 @@ public class PlayerAdapter extends PagerAdapter {
 
         tv_title.setText(musicDatas.get(position).getTitle());
         tv_artist.setText(musicDatas.get(position).getArtist());
-        MusicManager.setImageViewByGlide(context, iv_image, musicDatas.get(position).getAlbum_id());
+        MusicManager.setImageViewByGlide(context, iv_image, musicDatas.get(position));
 
         container.addView(view);
         return view;

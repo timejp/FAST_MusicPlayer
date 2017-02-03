@@ -15,43 +15,117 @@
 
     </android.support.v4.view.ViewPager>
 
-    <RelativeLayout
-        android:id="@+id/controlLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/controlLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true">-->
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_media_play"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="21dp"
-            android:id="@+id/bt_play" />
+        <!--<ImageButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:srcCompat="@android:drawable/ic_media_rew"-->
+            <!--android:id="@+id/bt_back"-->
+            <!--android:layout_alignTop="@+id/bt_play"-->
+            <!--android:layout_toLeftOf="@+id/bt_play"-->
+            <!--android:layout_toStartOf="@+id/bt_play"-->
+            <!--android:layout_marginRight="52dp"-->
+            <!--android:layout_marginEnd="52dp" />-->
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_media_rew"
-            android:id="@+id/bt_back"
-            android:layout_alignTop="@+id/bt_play"
-            android:layout_toLeftOf="@+id/bt_play"
-            android:layout_toStartOf="@+id/bt_play"
-            android:layout_marginRight="52dp"
-            android:layout_marginEnd="52dp" />
+        <!--<ImageButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:srcCompat="@android:drawable/ic_media_ff"-->
+            <!--android:id="@+id/bt_next"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignTop="@+id/bt_play"-->
+            <!--android:layout_toRightOf="@+id/bt_play"-->
+            <!--android:layout_toEndOf="@+id/bt_play"-->
+            <!--android:layout_marginLeft="52dp"-->
+            <!--android:layout_marginStart="52dp" />-->
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_media_ff"
-            android:id="@+id/bt_next"
-            android:layout_centerVertical="true"
-            android:layout_alignTop="@+id/bt_play"
-            android:layout_toRightOf="@+id/bt_play"
-            android:layout_toEndOf="@+id/bt_play"
-            android:layout_marginLeft="52dp"
-            android:layout_marginStart="52dp" />
-    </RelativeLayout>
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/controlLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <TextView
+                android:text="00:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMusicTime"
+                android:layout_marginStart="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="16dp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <SeekBar
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/musicSeekbar"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintLeft_toRightOf="@+id/tvMusicTime"
+                app:layout_constraintRight_toLeftOf="@+id/tvMusicMaxTime"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <TextView
+                android:text="00:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMusicMaxTime"
+                android:layout_weight="1"
+                app:layout_constraintTop_toTopOf="@+id/tvMusicTime"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_media_play"
+                android:id="@+id/bt_play"
+                app:layout_constraintLeft_toRightOf="@+id/bt_back"
+                app:layout_constraintRight_toLeftOf="@+id/bt_next"
+                app:layout_constraintTop_toBottomOf="@+id/musicSeekbar"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="16dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_media_ff"
+                android:id="@+id/bt_next"
+                app:layout_constraintTop_toTopOf="@+id/bt_play"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="64dp"
+                android:layout_marginRight="64dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_media_rew"
+                android:id="@+id/bt_back"
+                app:layout_constraintTop_toTopOf="@+id/bt_play"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="64dp"
+                android:layout_marginLeft="64dp" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <!--<ImageButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:srcCompat="@android:drawable/ic_media_play"-->
+            <!--android:id="@+id/bt_play"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_centerHorizontal="true" />-->
+
+    <!--</RelativeLayout>-->
 </RelativeLayout>

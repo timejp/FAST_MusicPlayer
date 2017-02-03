@@ -55,17 +55,24 @@ public class MusicManager {
                 index = cursor.getColumnIndex(projections[3]);
                 musicData.setArtist(cursor.getString(index));
 
-                musicData.print();
+                musicData.setImageuri(getAlbumImageUri(musicData.getAlbum_id()));
+                musicData.setUri(getMusicUri(musicData.getId()));
+
                 datas.add(musicData);
             }
         }
+    }
+
+    private static Uri getMusicUri(String music_id){
+        Uri content_uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        return Uri.withAppendedPath(content_uri, music_id);
     }
 
     public static Uri getAlbumImageUri(String album_id) {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), Long.parseLong(album_id));
     }
 
-    public static Bitmap getAlbumImageBitmap(Context context, String album_id) {
+    public static Bitmap getAlbumImageBitmapbyID(Context context, String album_id) {
         Uri uri = getAlbumImageUri(album_id);
         ContentResolver resolver = context.getContentResolver();
         InputStream inputStream = null;
@@ -79,9 +86,9 @@ public class MusicManager {
         return null;
     }
 
-    public static void setImageViewByGlide(Context context, ImageView imageView, String album_id) {
+    public static void setImageViewByGlide(Context context, ImageView imageView, MusicData musicData) {
         Glide.with(context)
-                .load(MusicManager.getAlbumImageUri(album_id))
+                .load(musicData.getImageuri())
                 .placeholder(R.mipmap.ic_launcher)
                 .into(imageView);
     }
