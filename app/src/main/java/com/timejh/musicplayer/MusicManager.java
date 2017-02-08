@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tokijh on 2017. 2. 1..
@@ -23,9 +24,9 @@ import java.util.ArrayList;
 public class MusicManager {
 
     private static final String TAG = "MusicManager";
-    private static ArrayList<MusicData> datas = new ArrayList<>();
+    private static List<MusicData> datas = new ArrayList<>();
 
-    public static ArrayList<MusicData> getMusicDataList(Context context) {
+    public static List<MusicData> getMusicDataList(Context context) {
         if(datas.size() == 0)
             loadMusicDataList(context);
         return datas;

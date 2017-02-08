@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tokijh on 2017. 2. 1..
@@ -22,7 +23,7 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewAdapter.Cust
 
     private final String TAG = "MusicViewAdapter";
 
-    ArrayList<MusicData> datas;
+    List<MusicData> datas;
     Context context;
 
     public MusicViewAdapter(Context context) {
