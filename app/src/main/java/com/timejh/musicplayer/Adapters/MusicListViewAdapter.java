@@ -1,4 +1,4 @@
-package com.timejh.musicplayer.Adapter;
+package com.timejh.musicplayer.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.timejh.musicplayer.Datas.Music;
-import com.timejh.musicplayer.MusicPlayerActivity;
+import com.timejh.musicplayer.Activitys.MusicPlayerActivity;
+import com.timejh.musicplayer.Managers.MusicManager;
 import com.timejh.musicplayer.R;
 
 import java.util.ArrayList;
@@ -23,14 +24,14 @@ import java.util.List;
  * Created by tokijh on 2017. 2. 1..
  */
 
-public class MusicListView extends RecyclerView.Adapter<MusicListView.CustomViewHolder> {
+public class MusicListViewAdapter extends RecyclerView.Adapter<MusicListViewAdapter.CustomViewHolder> {
 
-    private final String TAG = "MusicListView";
+    private final String TAG = "MusicListViewAdapter";
 
     List<Music> datas;
     Context context;
 
-    public MusicListView(Context context) {
+    public MusicListViewAdapter(Context context) {
         datas = new ArrayList<>();
         this.context = context;
     }
@@ -68,10 +69,10 @@ public class MusicListView extends RecyclerView.Adapter<MusicListView.CustomView
 
         //로딩 라이브러리 Glide
 //        Glide.with(context)
-//                .load(Music.getAlbumImageUri(music.getAlbum_id()))
+//                .load(MusicManager.getAlbumImageUri(music.getAlbum_id()))
 //                .placeholder(R.mipmap.ic_launcher)
 //                .into(holder.iv_image);
-        com.timejh.musicplayer.Manager.Music.setImageViewByGlide(context, holder.iv_image, music);
+        MusicManager.setImageViewByGlide(context, holder.iv_image, music);
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
         holder.cardView.setAnimation(animation);

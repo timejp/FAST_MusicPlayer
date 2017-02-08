@@ -1,4 +1,4 @@
-package com.timejh.musicplayer.Manager;
+package com.timejh.musicplayer.Managers;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -23,9 +23,9 @@ import java.util.List;
  * Created by tokijh on 2017. 2. 1..
  */
 
-public class Music {
+public class MusicManager {
 
-    private static final String TAG = "Music";
+    private static final String TAG = "MusicManager";
     private static List<com.timejh.musicplayer.Datas.Music> datas = new ArrayList<>();
 
     public static List<com.timejh.musicplayer.Datas.Music> getMusicDataList(Context context) {

@@ -1,4 +1,4 @@
-package com.timejh.musicplayer;
+package com.timejh.musicplayer.Activitys;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -10,8 +10,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.timejh.musicplayer.Adapter.MusicListView;
-import com.timejh.musicplayer.Manager.Music;
+import com.timejh.musicplayer.Adapters.MusicListViewAdapter;
+import com.timejh.musicplayer.Managers.MusicManager;
+import com.timejh.musicplayer.R;
 import com.timejh.musicplayer.Utils.Message;
 
 public class MusicListViewActivity extends AppCompatActivity {
@@ -19,7 +20,7 @@ public class MusicListViewActivity extends AppCompatActivity {
     private final int REQ_CODE = 100;
 
     private RecyclerView recyclerView;
-    private MusicListView recyclerViewAdapter;
+    private MusicListViewAdapter recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class MusicListViewActivity extends AppCompatActivity {
 
     private void init() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        recyclerViewAdapter = new MusicListView(this);
+        recyclerViewAdapter = new MusicListViewAdapter(this);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -65,7 +66,7 @@ public class MusicListViewActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        recyclerViewAdapter.set(Music.getMusicDataList(this));
+        recyclerViewAdapter.set(MusicManager.getMusicDataList(this));
     }
 
     @Override

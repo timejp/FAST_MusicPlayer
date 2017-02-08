@@ -1,4 +1,4 @@
-package com.timejh.musicplayer.Adapter;
+package com.timejh.musicplayer.Adapters;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.timejh.musicplayer.Datas.Music;
+import com.timejh.musicplayer.Managers.MusicManager;
 import com.timejh.musicplayer.R;
 
 import java.util.ArrayList;
@@ -18,13 +19,13 @@ import java.util.List;
  * Created by tokijh on 2017. 2. 2..
  */
 
-public class MusicPlayer extends PagerAdapter {
+public class MusicPlayerManager extends PagerAdapter {
 
     private List<Music> musics;
     private Context context;
     private LayoutInflater inflater;
 
-    public MusicPlayer(Context context) {
+    public MusicPlayerManager(Context context) {
         musics = new ArrayList<>();
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -63,7 +64,7 @@ public class MusicPlayer extends PagerAdapter {
 
         tv_title.setText(musics.get(position).getTitle());
         tv_artist.setText(musics.get(position).getArtist());
-        com.timejh.musicplayer.Manager.Music.setImageViewByGlide(context, iv_image, musics.get(position));
+        MusicManager.setImageViewByGlide(context, iv_image, musics.get(position));
 
         container.addView(view);
         return view;

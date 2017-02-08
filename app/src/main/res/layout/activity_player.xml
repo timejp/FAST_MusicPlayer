@@ -5,7 +5,7 @@
     android:id="@+id/activity_player"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.timejh.musicplayer.MusicPlayerActivity">
+    tools:context="com.timejh.musicplayer.Activitys.MusicPlayerActivity">
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"

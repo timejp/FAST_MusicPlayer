@@ -1,4 +1,4 @@
-package com.timejh.musicplayer;
+package com.timejh.musicplayer.Activitys;
 
 import android.content.Intent;
 import android.media.AudioManager;
@@ -12,8 +12,9 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.timejh.musicplayer.Adapter.MusicPlayer;
-import com.timejh.musicplayer.Manager.Music;
+import com.timejh.musicplayer.Adapters.MusicPlayerManager;
+import com.timejh.musicplayer.Managers.MusicManager;
+import com.timejh.musicplayer.R;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +26,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private static final int PLAY = 1;
     private static final int PAUSE = 2;
 
-    public MusicPlayer musicPlayer;
+    public MusicPlayerManager musicPlayerManager;
 
     private ViewPager viewPager;
     private ImageButton bt_play, bt_back, bt_next;
@@ -47,9 +48,9 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         init();
 
-        musicPlayer = new MusicPlayer(this);
-        musicPlayer.set(Music.getMusicDataList(this));
-        viewPager.setAdapter(musicPlayer);
+        musicPlayerManager = new MusicPlayerManager(this);
+        musicPlayerManager.set(MusicManager.getMusicDataList(this));
+        viewPager.setAdapter(musicPlayerManager);
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -176,7 +177,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private void play() {
         switch (PLAYSTATUS) {
             case IDLE:
-                Uri uri = musicPlayer.getMusicData(musicPosition).getUri();
+                Uri uri = musicPlayerManager.getMusicData(musicPosition).getUri();
                 if (player != null) {
                     player.release();
                 }
@@ -214,7 +215,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     if (position > 0)
                         position--;
                     else
-                        position = musicPlayer.getCount();
+                        position = musicPlayerManager.getCount();
                 } else {
                     PLAYSTATUS = IDLE;
                     play();
@@ -229,7 +230,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         if (player == null)
             return;
         int position = musicPosition;
-        if (position < musicPlayer.getCount() - 1) {
+        if (position < musicPlayerManager.getCount() - 1) {
             position++;
         } else {
             position = 0;
