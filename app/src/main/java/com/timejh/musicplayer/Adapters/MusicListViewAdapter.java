@@ -60,19 +60,7 @@ public class MusicListViewAdapter extends RecyclerView.Adapter<MusicListViewAdap
         holder.tv_artist.setText(music.getArtist());
         holder.position = position;
 
-        //holder.iv_image.setImageURI(getAlbumImageUri(music.getAlbum_id()));
-//        Bitmap albumImage = getAlbumImageBitmap(music.getAlbum_id());
-//        if (albumImage != null)
-//            holder.iv_image.setImageBitmap(albumImage);
-//        else
-//            holder.iv_image.setImageResource(R.mipmap.ic_launcher);
-
-        //로딩 라이브러리 Glide
-//        Glide.with(context)
-//                .load(MusicManager.getAlbumImageUri(music.getAlbum_id()))
-//                .placeholder(R.mipmap.ic_launcher)
-//                .into(holder.iv_image);
-        MusicManager.setImageViewByGlide(context, holder.iv_image, music);
+        MusicManager.setMusicImageByGlide(context, holder.iv_image, music);
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
         holder.cardView.setAnimation(animation);
@@ -98,14 +86,16 @@ public class MusicListViewAdapter extends RecyclerView.Adapter<MusicListViewAdap
             tv_artist = (TextView) itemView.findViewById(R.id.tv_artist);
             iv_image = (ImageView) itemView.findViewById(R.id.iv_image);
             cardView = (CardView) itemView.findViewById(R.id.cardView);
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, MusicPlayerActivity.class);
-                    intent.putExtra("musicPosition", position);
-                    context.startActivity(intent);
-                }
-            });
+            cardView.setOnClickListener(cardViewClickListener);
         }
+
+        private View.OnClickListener cardViewClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MusicPlayerActivity.class);
+                intent.putExtra("musicPosition", position);
+                context.startActivity(intent);
+            }
+        };
     }
 }

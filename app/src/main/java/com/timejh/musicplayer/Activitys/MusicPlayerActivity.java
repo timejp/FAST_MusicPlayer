@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.timejh.musicplayer.Adapters.MusicPlayerManager;
+import com.timejh.musicplayer.Adapters.MusicPlayerAdapter;
 import com.timejh.musicplayer.Managers.MusicManager;
 import com.timejh.musicplayer.R;
 
@@ -26,7 +26,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private static final int PLAY = 1;
     private static final int PAUSE = 2;
 
-    public MusicPlayerManager musicPlayerManager;
+    public MusicPlayerAdapter musicPlayerManager;
 
     private ViewPager viewPager;
     private ImageButton bt_play, bt_back, bt_next;
@@ -48,15 +48,11 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         init();
 
-        musicPlayerManager = new MusicPlayerManager(this);
-        musicPlayerManager.set(MusicManager.getMusicDataList(this));
-        viewPager.setAdapter(musicPlayerManager);
-
         Intent intent = getIntent();
         if (intent != null) {
             Bundle bundle = intent.getExtras();
             int receivedPosition = bundle.getInt("musicPosition");
-            if(receivedPosition == 0) {
+            if (receivedPosition == 0) {
                 PLAYSTATUS = IDLE;
                 musicPosition = 0;
                 play();
@@ -71,7 +67,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                while(musicThreadEnable) {
+                while (musicThreadEnable) {
                     if (PLAYSTATUS == PLAY && player != null) {
                         Thread.sleep(1000);
                         final long time = player.getCurrentPosition();
@@ -92,6 +88,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
     private void init() {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         musicSeekbar = (SeekBar) findViewById(R.id.musicSeekbar);
         tvMusicTime = (TextView) findViewById(R.id.tvMusicTime);
@@ -106,6 +103,10 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         musicSeekbar.setOnSeekBarChangeListener(seekBarChangeListener);
         viewPager.addOnPageChangeListener(pageChangeListener);
+
+        musicPlayerManager = new MusicPlayerAdapter(this);
+        musicPlayerManager.set(MusicManager.getMusicDataList(this));
+        viewPager.setAdapter(musicPlayerManager);
     }
 
     SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -157,7 +158,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         }
     };
 
-    View.OnClickListener clickListener = new View.OnClickListener() {
+    private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -177,27 +178,43 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private void play() {
         switch (PLAYSTATUS) {
             case IDLE:
-                Uri uri = musicPlayerManager.getMusicData(musicPosition).getUri();
-                if (player != null) {
-                    player.release();
-                }
-                player = MediaPlayer.create(this, uri);
-                player.setOnCompletionListener(completionListener);
-                player.setLooping(false);
-
-                player.start();
-                PLAYSTATUS = PLAY;
+                playIDLE();
                 break;
             case PLAY:
-                player.pause();
-                PLAYSTATUS = PAUSE;
+                playPLAY();
                 break;
             case PAUSE:
-                player.start();
-                PLAYSTATUS = PLAY;
+                playPAUSE();
                 break;
         }
         updateStatus();
+    }
+
+    private void playerReset() {
+        Uri uri = musicPlayerManager.getMusicData(musicPosition).getUri();
+        if (player != null) {
+            player.release();
+        }
+        player = MediaPlayer.create(this, uri);
+        player.setOnCompletionListener(completionListener);
+        player.setLooping(false);
+    }
+
+    private void playIDLE() {
+        playerReset();
+
+        player.start();
+        PLAYSTATUS = PLAY;
+    }
+
+    private void playPLAY() {
+        player.pause();
+        PLAYSTATUS = PAUSE;
+    }
+
+    private void playPAUSE() {
+        player.start();
+        PLAYSTATUS = PLAY;
     }
 
     private void back() {
@@ -211,7 +228,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 break;
             case PLAY:
             case PAUSE:
-                if(musicSeekbar.getProgress() < 2000) {
+                if (musicSeekbar.getProgress() < 2000) {
                     if (position > 0)
                         position--;
                     else

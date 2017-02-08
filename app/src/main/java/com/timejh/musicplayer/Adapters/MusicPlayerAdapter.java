@@ -19,13 +19,13 @@ import java.util.List;
  * Created by tokijh on 2017. 2. 2..
  */
 
-public class MusicPlayerManager extends PagerAdapter {
+public class MusicPlayerAdapter extends PagerAdapter {
 
     private List<Music> musics;
     private Context context;
     private LayoutInflater inflater;
 
-    public MusicPlayerManager(Context context) {
+    public MusicPlayerAdapter(Context context) {
         musics = new ArrayList<>();
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -64,7 +64,7 @@ public class MusicPlayerManager extends PagerAdapter {
 
         tv_title.setText(musics.get(position).getTitle());
         tv_artist.setText(musics.get(position).getArtist());
-        MusicManager.setImageViewByGlide(context, iv_image, musics.get(position));
+        MusicManager.setMusicImageByGlide(context, iv_image, musics.get(position));
 
         container.addView(view);
         return view;

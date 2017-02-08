@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.timejh.musicplayer.Datas.Music;
 import com.timejh.musicplayer.R;
 import com.timejh.musicplayer.Utils.Logger;
 
@@ -26,47 +27,54 @@ import java.util.List;
 public class MusicManager {
 
     private static final String TAG = "MusicManager";
-    private static List<com.timejh.musicplayer.Datas.Music> datas = new ArrayList<>();
 
-    public static List<com.timejh.musicplayer.Datas.Music> getMusicDataList(Context context) {
-        if(datas.size() == 0)
-            loadMusicDataList(context);
+    private final static Uri URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+    private final static String PROJECTIONS[] = {
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ARTIST
+    };
+
+    private static List<Music> datas = new ArrayList<>();
+
+    public static List<Music> getMusicDataList(Context context) {
+        if (datas.size() == 0)
+            loadMusicList(context);
         return datas;
     }
 
-    private static void loadMusicDataList(Context context) {
+    private static void loadMusicList(Context context) {
         ContentResolver resolver = context.getContentResolver();
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String projections[] ={
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST
-        };
 
-        Cursor cursor = resolver.query(uri, projections, null, null, null);
-        if(cursor != null) {
-            while(cursor.moveToNext()) {
-                com.timejh.musicplayer.Datas.Music music = new com.timejh.musicplayer.Datas.Music();
-
-                int index = cursor.getColumnIndex(projections[0]);
-                music.setId(cursor.getString(index));
-                index = cursor.getColumnIndex(projections[1]);
-                music.setAlbum_id(cursor.getString(index));
-                index = cursor.getColumnIndex(projections[2]);
-                music.setTitle(cursor.getString(index));
-                index = cursor.getColumnIndex(projections[3]);
-                music.setArtist(cursor.getString(index));
-
-                music.setImageuri(getAlbumImageUri(music.getAlbum_id()));
-                music.setUri(getMusicUri(music.getId()));
-
-                datas.add(music);
+        Cursor cursor = resolver.query(URI, PROJECTIONS, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                datas.add(getMusicData(cursor));
             }
         }
     }
 
-    private static Uri getMusicUri(String music_id){
+    private static Music getMusicData(Cursor cursor) {
+        Music music = new Music();
+
+        music.setId(getValue(cursor, PROJECTIONS[0]));
+        music.setAlbum_id(getValue(cursor, PROJECTIONS[1]));
+        music.setTitle(getValue(cursor, PROJECTIONS[2]));
+        music.setArtist(getValue(cursor, PROJECTIONS[3]));
+
+        music.setImageuri(getAlbumImageUri(music.getAlbum_id()));
+        music.setUri(getMusicUri(music.getId()));
+
+        return music;
+    }
+
+    private static String getValue(Cursor cursor, String projection) {
+        int index = cursor.getColumnIndex(projection);
+        return cursor.getString(index);
+    }
+
+    private static Uri getMusicUri(String music_id) {
         Uri content_uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         return Uri.withAppendedPath(content_uri, music_id);
     }
@@ -75,7 +83,7 @@ public class MusicManager {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), Long.parseLong(album_id));
     }
 
-    public static Bitmap getAlbumImageBitmapbyID(Context context, String album_id) {
+    public static Bitmap getAlbumImageBitmapByID(Context context, String album_id) {
         Uri uri = getAlbumImageUri(album_id);
         ContentResolver resolver = context.getContentResolver();
         InputStream inputStream = null;
@@ -89,7 +97,7 @@ public class MusicManager {
         return null;
     }
 
-    public static void setImageViewByGlide(Context context, ImageView imageView, com.timejh.musicplayer.Datas.Music music) {
+    public static void setMusicImageByGlide(Context context, ImageView imageView, Music music) {
         Glide.with(context)
                 .load(music.getImageuri())
                 .placeholder(R.mipmap.ic_launcher)
