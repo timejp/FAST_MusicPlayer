@@ -48,6 +48,56 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         init();
 
+        playStartup();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        musicThreadEnable = false;
+    }
+
+    private void init() {
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        uiInit();
+
+        listenerInit();
+
+        valueInit();
+
+        adapterInit();
+    }
+
+    private void uiInit() {
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        musicSeekbar = (SeekBar) findViewById(R.id.musicSeekbar);
+        tvMusicTime = (TextView) findViewById(R.id.tvMusicTime);
+        tvMusicMaxTime = (TextView) findViewById(R.id.tvMusicMaxTime);
+        bt_back = (ImageButton) findViewById(R.id.bt_back);
+        bt_play = (ImageButton) findViewById(R.id.bt_play);
+        bt_next = (ImageButton) findViewById(R.id.bt_next);
+    }
+
+    private void listenerInit() {
+        bt_back.setOnClickListener(clickListener);
+        bt_play.setOnClickListener(clickListener);
+        bt_next.setOnClickListener(clickListener);
+
+        musicSeekbar.setOnSeekBarChangeListener(seekBarChangeListener);
+        viewPager.addOnPageChangeListener(pageChangeListener);
+    }
+
+    private void adapterInit() {
+        viewPager.setAdapter(musicPlayerManager);
+    }
+
+    private void valueInit() {
+        musicPlayerManager = new MusicPlayerAdapter(this);
+        musicPlayerManager.set(MusicManager.getMusicDataList(this));
+    }
+
+    private void playStartup() {
         Intent intent = getIntent();
         if (intent != null) {
             Bundle bundle = intent.getExtras();
@@ -60,120 +110,9 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(receivedPosition);
             }
         }
+
         musicThread.start();
     }
-
-    private Thread musicThread = new Thread() {
-        @Override
-        public void run() {
-            try {
-                while (musicThreadEnable) {
-                    if (PLAYSTATUS == PLAY && player != null) {
-                        Thread.sleep(1000);
-                        final long time = player.getCurrentPosition();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                musicSeekbar.setProgress((int) time);
-                                tvMusicTime.setText(timeString(time));
-                            }
-                        });
-                    }
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    private void init() {
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        musicSeekbar = (SeekBar) findViewById(R.id.musicSeekbar);
-        tvMusicTime = (TextView) findViewById(R.id.tvMusicTime);
-        tvMusicMaxTime = (TextView) findViewById(R.id.tvMusicMaxTime);
-        bt_back = (ImageButton) findViewById(R.id.bt_back);
-        bt_play = (ImageButton) findViewById(R.id.bt_play);
-        bt_next = (ImageButton) findViewById(R.id.bt_next);
-
-        bt_back.setOnClickListener(clickListener);
-        bt_play.setOnClickListener(clickListener);
-        bt_next.setOnClickListener(clickListener);
-
-        musicSeekbar.setOnSeekBarChangeListener(seekBarChangeListener);
-        viewPager.addOnPageChangeListener(pageChangeListener);
-
-        musicPlayerManager = new MusicPlayerAdapter(this);
-        musicPlayerManager.set(MusicManager.getMusicDataList(this));
-        viewPager.setAdapter(musicPlayerManager);
-    }
-
-    SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            if (fromUser && player != null) {
-                player.seekTo(progress);
-            }
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
-
-    MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-            next();
-        }
-    };
-
-    ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            if (musicPosition == position) {
-                updateStatus();
-            } else {
-                PLAYSTATUS = IDLE;
-                musicPosition = position;
-                play();
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
-
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.bt_back:
-                    back();
-                    break;
-                case R.id.bt_play:
-                    play();
-                    break;
-                case R.id.bt_next:
-                    next();
-                    break;
-            }
-        }
-    };
 
     private void play() {
         switch (PLAYSTATUS) {
@@ -187,7 +126,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 playPAUSE();
                 break;
         }
-        updateStatus();
+        updateUiStatus();
     }
 
     private void playerReset() {
@@ -242,7 +181,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
         viewPager.setCurrentItem(position);
     }
 
-
     private void next() {
         if (player == null)
             return;
@@ -261,7 +199,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         }
     }
 
-    private void updateStatus() {
+    private void updateUiStatus() {
         switch (PLAYSTATUS) {
             case IDLE:
                 bt_play.setImageResource(android.R.drawable.ic_media_play);
@@ -285,9 +223,92 @@ public class MusicPlayerActivity extends AppCompatActivity {
         return String.format("%02d:%02d", MIN, SEC);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        musicThreadEnable = false;
-    }
+    private Thread musicThread = new Thread() {
+        @Override
+        public void run() {
+            try {
+                while (musicThreadEnable) {
+                    if (PLAYSTATUS == PLAY && player != null) {
+                        Thread.sleep(1000);
+                        final long time = player.getCurrentPosition();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                musicSeekbar.setProgress((int) time);
+                                tvMusicTime.setText(timeString(time));
+                            }
+                        });
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            if (fromUser && player != null) {
+                player.seekTo(progress);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
+    private MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            next();
+        }
+    };
+
+    private ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (musicPosition == position) {
+                updateUiStatus();
+            } else {
+                PLAYSTATUS = IDLE;
+                musicPosition = position;
+                play();
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.bt_back:
+                    back();
+                    break;
+                case R.id.bt_play:
+                    play();
+                    break;
+                case R.id.bt_next:
+                    next();
+                    break;
+            }
+        }
+    };
 }
