@@ -1,4 +1,4 @@
-package com.timejh.musicplayer;
+package com.timejh.musicplayer.Manager;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.timejh.musicplayer.R;
+import com.timejh.musicplayer.Utils.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -21,12 +23,12 @@ import java.util.List;
  * Created by tokijh on 2017. 2. 1..
  */
 
-public class MusicManager {
+public class Music {
 
-    private static final String TAG = "MusicManager";
-    private static List<MusicData> datas = new ArrayList<>();
+    private static final String TAG = "Music";
+    private static List<com.timejh.musicplayer.Datas.Music> datas = new ArrayList<>();
 
-    public static List<MusicData> getMusicDataList(Context context) {
+    public static List<com.timejh.musicplayer.Datas.Music> getMusicDataList(Context context) {
         if(datas.size() == 0)
             loadMusicDataList(context);
         return datas;
@@ -45,21 +47,21 @@ public class MusicManager {
         Cursor cursor = resolver.query(uri, projections, null, null, null);
         if(cursor != null) {
             while(cursor.moveToNext()) {
-                MusicData musicData = new MusicData();
+                com.timejh.musicplayer.Datas.Music music = new com.timejh.musicplayer.Datas.Music();
 
                 int index = cursor.getColumnIndex(projections[0]);
-                musicData.setId(cursor.getString(index));
+                music.setId(cursor.getString(index));
                 index = cursor.getColumnIndex(projections[1]);
-                musicData.setAlbum_id(cursor.getString(index));
+                music.setAlbum_id(cursor.getString(index));
                 index = cursor.getColumnIndex(projections[2]);
-                musicData.setTitle(cursor.getString(index));
+                music.setTitle(cursor.getString(index));
                 index = cursor.getColumnIndex(projections[3]);
-                musicData.setArtist(cursor.getString(index));
+                music.setArtist(cursor.getString(index));
 
-                musicData.setImageuri(getAlbumImageUri(musicData.getAlbum_id()));
-                musicData.setUri(getMusicUri(musicData.getId()));
+                music.setImageuri(getAlbumImageUri(music.getAlbum_id()));
+                music.setUri(getMusicUri(music.getId()));
 
-                datas.add(musicData);
+                datas.add(music);
             }
         }
     }
@@ -87,9 +89,9 @@ public class MusicManager {
         return null;
     }
 
-    public static void setImageViewByGlide(Context context, ImageView imageView, MusicData musicData) {
+    public static void setImageViewByGlide(Context context, ImageView imageView, com.timejh.musicplayer.Datas.Music music) {
         Glide.with(context)
-                .load(musicData.getImageuri())
+                .load(music.getImageuri())
                 .placeholder(R.mipmap.ic_launcher)
                 .into(imageView);
     }

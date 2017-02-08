@@ -9,14 +9,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.timejh.musicplayer.Adapter.MusicListView;
+import com.timejh.musicplayer.Manager.Music;
+import com.timejh.musicplayer.Utils.Message;
+
+public class MusicListViewActivity extends AppCompatActivity {
 
     private final int REQ_CODE = 100;
 
     private RecyclerView recyclerView;
-    private MusicViewAdapter recyclerViewAdapter;
+    private MusicListView recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        recyclerViewAdapter = new MusicViewAdapter(this);
+        recyclerViewAdapter = new MusicListView(this);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -55,19 +58,19 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadData();
             } else {
-                Toast.makeText(this, "권한을 허용하지 않으면 프로그램을 실행 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Message.show(this, "권한을 허용하지 않으면 프로그램을 실행 할 수 없습니다.");
                 finish();
             }
         }
     }
 
     private void loadData() {
-        recyclerViewAdapter.set(MusicManager.getMusicDataList(this));
+        recyclerViewAdapter.set(Music.getMusicDataList(this));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PlayerActivity.stop();
+        MusicPlayerActivity.stop();
     }
 }

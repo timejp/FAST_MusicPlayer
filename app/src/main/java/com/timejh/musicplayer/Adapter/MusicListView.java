@@ -1,4 +1,4 @@
-package com.timejh.musicplayer;
+package com.timejh.musicplayer.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.timejh.musicplayer.Datas.Music;
+import com.timejh.musicplayer.MusicPlayerActivity;
+import com.timejh.musicplayer.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,24 +23,24 @@ import java.util.List;
  * Created by tokijh on 2017. 2. 1..
  */
 
-public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewAdapter.CustomViewHolder> {
+public class MusicListView extends RecyclerView.Adapter<MusicListView.CustomViewHolder> {
 
-    private final String TAG = "MusicViewAdapter";
+    private final String TAG = "MusicListView";
 
-    List<MusicData> datas;
+    List<Music> datas;
     Context context;
 
-    public MusicViewAdapter(Context context) {
+    public MusicListView(Context context) {
         datas = new ArrayList<>();
         this.context = context;
     }
 
-    public void add(MusicData musicData) {
-        datas.add(musicData);
+    public void add(Music music) {
+        datas.add(music);
         this.notifyDataSetChanged();
     }
 
-    public void set(ArrayList<MusicData> datas) {
+    public void set(List<Music> datas) {
         this.datas = datas;
         this.notifyDataSetChanged();
     }
@@ -49,14 +53,14 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewAdapter.Cust
 
     @Override
     public void onBindViewHolder(CustomViewHolder holder, int position) {
-        final MusicData musicData = datas.get(position);
+        final Music music = datas.get(position);
 
-        holder.tv_title.setText(musicData.getTitle());
-        holder.tv_artist.setText(musicData.getArtist());
+        holder.tv_title.setText(music.getTitle());
+        holder.tv_artist.setText(music.getArtist());
         holder.position = position;
 
-        //holder.iv_image.setImageURI(getAlbumImageUri(musicData.getAlbum_id()));
-//        Bitmap albumImage = getAlbumImageBitmap(musicData.getAlbum_id());
+        //holder.iv_image.setImageURI(getAlbumImageUri(music.getAlbum_id()));
+//        Bitmap albumImage = getAlbumImageBitmap(music.getAlbum_id());
 //        if (albumImage != null)
 //            holder.iv_image.setImageBitmap(albumImage);
 //        else
@@ -64,10 +68,10 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewAdapter.Cust
 
         //로딩 라이브러리 Glide
 //        Glide.with(context)
-//                .load(MusicManager.getAlbumImageUri(musicData.getAlbum_id()))
+//                .load(Music.getAlbumImageUri(music.getAlbum_id()))
 //                .placeholder(R.mipmap.ic_launcher)
 //                .into(holder.iv_image);
-        MusicManager.setImageViewByGlide(context, holder.iv_image, musicData);
+        com.timejh.musicplayer.Manager.Music.setImageViewByGlide(context, holder.iv_image, music);
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
         holder.cardView.setAnimation(animation);
@@ -96,7 +100,7 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewAdapter.Cust
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, PlayerActivity.class);
+                    Intent intent = new Intent(context, MusicPlayerActivity.class);
                     intent.putExtra("musicPosition", position);
                     context.startActivity(intent);
                 }

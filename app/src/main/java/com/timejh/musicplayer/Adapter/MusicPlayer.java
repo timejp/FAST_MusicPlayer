@@ -1,4 +1,4 @@
-package com.timejh.musicplayer;
+package com.timejh.musicplayer.Adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -8,41 +8,45 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.timejh.musicplayer.Datas.Music;
+import com.timejh.musicplayer.R;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tokijh on 2017. 2. 2..
  */
 
-public class PlayerAdapter extends PagerAdapter {
+public class MusicPlayer extends PagerAdapter {
 
-    private ArrayList<MusicData> musicDatas;
+    private List<Music> musics;
     private Context context;
     private LayoutInflater inflater;
 
-    public PlayerAdapter(Context context) {
-        musicDatas = new ArrayList<>();
+    public MusicPlayer(Context context) {
+        musics = new ArrayList<>();
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void add(MusicData musicData) {
-        musicDatas.add(musicData);
+    public void add(Music music) {
+        musics.add(music);
         this.notifyDataSetChanged();
     }
 
-    public void set(ArrayList<MusicData> musicDatas) {
-        this.musicDatas = musicDatas;
+    public void set(List<Music> musics) {
+        this.musics = musics;
         this.notifyDataSetChanged();
     }
 
-    public MusicData getMusicData(int position) {
-        return musicDatas.get(position);
+    public Music getMusicData(int position) {
+        return musics.get(position);
     }
 
     @Override
     public int getCount() {
-        return musicDatas.size();
+        return musics.size();
     }
 
     @Override
@@ -57,9 +61,9 @@ public class PlayerAdapter extends PagerAdapter {
         TextView tv_title = (TextView) view.findViewById(R.id.tv_title);
         TextView tv_artist = (TextView) view.findViewById(R.id.tv_artist);
 
-        tv_title.setText(musicDatas.get(position).getTitle());
-        tv_artist.setText(musicDatas.get(position).getArtist());
-        MusicManager.setImageViewByGlide(context, iv_image, musicDatas.get(position));
+        tv_title.setText(musics.get(position).getTitle());
+        tv_artist.setText(musics.get(position).getArtist());
+        com.timejh.musicplayer.Manager.Music.setImageViewByGlide(context, iv_image, musics.get(position));
 
         container.addView(view);
         return view;
